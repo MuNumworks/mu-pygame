@@ -26,7 +26,7 @@ import pygame
   ```
   Initialise mu-pygame, concrètement ne fait rien pour l'instant.
 
-<br />
+
 * Définir la fenêtre 
   ```py
   screen = pygame.display.set_mode((320,222))
