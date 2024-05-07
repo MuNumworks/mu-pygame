@@ -90,7 +90,7 @@ class Display:
     fl(0,self.YPLUS,self.width,self.height,"#000000")
     if self.YPLUS:
       fl(0,0,self.width,self.YPLUS,"#ffffff")
-      dr(self.caption,5,0)
+      dr(self.caption[:self.width//10-1],5,0)
     return
 
   def set_caption(self, caption: str)->None:
@@ -99,15 +99,18 @@ class Display:
     self.__refresh_screen()
     return
 
-  def set_mode(self, size: tuple, flags: int)->__Surface:
+  def set_mode(self, size: tuple, flags: int = 0)->__Surface:
     """ Create an Surface object """
     self.width,self.height = size
     Check._int(self.width,self.height)
+    if flags & NOFRAME:
+      self.YPLUS = 0
+    if flags & FULLSCREEN:
+      self.width = 320
+      self.height = 222-self.YPLUS
     if self.height+self.YPLUS>222:
       self.height = 222
-    if flags==1:self.width,self.height = 320,222
-    if flags==16:self.YPLUS = 0
-    if flags==17:self.YPLUS = 0;self.width,self.height=320,222
+
     self.surface = __Surface(self.width,self.height)
     self.__refresh_screen()
     return self.surface
