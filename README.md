@@ -1,4 +1,4 @@
-![Visitor](https://visitor-badge.laobi.icu/badge?page_id=MuNumworks.mu-pygame)
+![Visitor](https://visitor-badge.laobi.icu/badge?page_id=MuNumworks.mu-pygame) ![Downloads](https://shields.io/github/downloads/MuNumworks/mu-pygame/total)
 # mu-pygame
 **Ce script est fait pour fonctionner sur une calculatrice Numworks, peut importe son OS. Néanmoins, il n'a été testé que sur la version 
 1.4.3 de <a href="https://munumworks.github.io/mu-website/">Mu</a>.** <br />
