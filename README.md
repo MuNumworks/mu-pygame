@@ -4,5 +4,5 @@
 
 ### Installation 
 Pour installer mu-pygame sur votre calculatrice, plusieurs choix s'offrent à vous.
-* Depuis le <a href="https://my.numworks.com/python/systeme-eratz/pygame">site de Numworks</a>, en cliquant sur *envoyer sur ma calculatrice*
-* Depuis le <a href="https://munumworks.github.io/mu-website/Subfiles/script-store.html">script store</a> de Mu
+* Depuis le <a href="https://my.numworks.com/python/systeme-eratz/pygame">site de Numworks</a>, en cliquant sur *envoyer sur ma calculatrice*.
+* Depuis le <a href="https://munumworks.github.io/mu-website/Subfiles/script-store.html">script store</a> de Mu (⚠️Ne marche pas encore⚠️).
