@@ -128,6 +128,30 @@ import pygame
   Obtient un dictionnaire des touches, et leur état en booléen
   ⚠️Ne fonctionne que pour les touches OK, Flèche du haut, Flèche du bas, Flèche de droite, Flèche de gauche, et Retour⚠️
   
+* Initialiser une horloge
+  ```py
+  clock = pygame.time.Clock()
+  ```
+  Créé une horloge, utilisable dans des boucles pour diverses applications
+
+* Caper sa boucle
+  ```py
+  clock.tick(30)
+  ```
+  Cap les fps de la boucle dans laquelle cette fonction est appelée, par défaut à 60
+
+* Obtenir les fps
+  ```py
+  clock.get_fps()
+  ```
+  Retourne les fps moyens sur 30 frames
+
+* Suspendre l'exécution du programme
+  ```py
+  pygame.time.delay(1000)
+  ```
+  Suspend l'exécution du programme pour une période de 1000 millisecondes
+
 
 * Constantes
   mu-pygame implémente aussi certaines constantes de pygame
@@ -144,7 +168,6 @@ import pygame
 
 ### Prévisions
 Seront ajoutés prochainement les fonctionnalités suivantes
-* `pygame.time`
 * `pygame.event`
 * Plus de touches pour `pygame.key`
 * plus de flags pour `pygame.display`
