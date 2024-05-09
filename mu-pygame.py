@@ -1,13 +1,13 @@
-## Pygame like - Kojiverse Productions
-## Snapshot :: 0.1
+## mu pygame  - Kojiverse Productions
+## Snapshot :: 0.2
 ## Will work on any numworks OS
-## (for now, worked just on mu 1.4.3)
+## (for now, just worked on mu 1.4.3)
 
 ################## imports ################
 
 from kandinsky import fill_rect as fl,fill_circle as fc,draw_string as dr,draw_line as dl,wait_vblank
 from ion import *
-from time import sleep
+import time as sys_time
 
 ################## const ##################
 
@@ -16,16 +16,56 @@ K_OK = KEY_OK; K_BACK = KEY_BACK; K_LEFT = KEY_LEFT; K_RIGHT = KEY_RIGHT; K_UP =
 LOC_KEYS_ = (K_OK,K_DOWN,K_UP,K_RIGHT,K_LEFT)
 
 FULLSCREEN = 0x00000001
-NOFRAME = 0x00000010
+NOFRAME    = 0x00000010
+QUIT       = 0x10000000
+KEYDOWN    = 0x00000100
+KEYUP      = 0x00000200
+
+__all__ = [
+  "Display",
+  "Display.set_mode",
+  "Display.set_caption",
+  "Display.flip",
+  "Surface",
+  "Surface.fill"
+  "Rect",
+  "Rect.colliderect",
+  "Rect.move_to",
+  "Rect.move",
+  "draw",
+  "draw.rect",
+  "draw.line",
+  "draw.circle",
+  "time",
+  "time.delay",
+  "time.Clock",
+  "Clock",
+  "Clock.tick",
+  "Clock.get_fps"
+  "key",
+  "key.get_pressed",
+]
+
+################## utils ##################
+
+presses = {key:[None,None] for key in LOC_KEYS_}
+
+def presses_update():
+  for key in presses.keys():
+    presses[key][-2]=presses[key][-1]
+    presses[key][-1]=keydown(key)
+
+click = lambda key:presses[key][-1] and not presses[key][-2]
+release = lambda key:presses[key][-2] and not presses[key][-1]
 
 ################## class ##################
 
 class init:
   def __init__(self)->None:
-    """ Init but idk what the fuck this func is supposed to do in original pygame """
+    """ Init but idk what the fuck this func is supposed to do in the original pygame """
     return
 
-class __Surface:
+class Surface:
   def __init__(self, width: int, height: int)->None:
     """ Create an surface for draw, blit, ..."""
     self.width = width
@@ -66,8 +106,8 @@ class Check:
   def _rect(*args)->None:
     """ Check if args are Rects """
     for i in args:
-      if type(i)==__Surface:
-        raise ValueError("A pygame.Rect was expected instead of %s"%i)
+      if type(i)!=Rect:
+        raise ValueError("A pygame.Rect object was expected instead of %s"%i)
     return
 
   def _tuple(*args)->None:
@@ -75,6 +115,13 @@ class Check:
     for i in args:
       if type(i)!=tuple:
         raise ValueError("A tuple was expected instead of %s"%i)
+    return
+
+  def _surface(*args)->None:
+    for i in args:
+      if type(i)!=Surface:
+        raise ValueError("A pygame.Surface object was expected instead of %s"%i)
+    return
 
 class Display:
   def __init__(self)->None:
@@ -87,7 +134,8 @@ class Display:
 
   def __refresh_screen(self)->None:
     """ Refresh window (size, caption) """
-    fl(0,self.YPLUS,self.width,self.height,"#000000")
+    if not self.surface:
+      fl(0,self.YPLUS,self.width,self.height,"#000000")
     if self.YPLUS:
       fl(0,0,self.width,self.YPLUS,"#ffffff")
       dr(self.caption[:self.width//10-1],5,0)
@@ -99,7 +147,7 @@ class Display:
     self.__refresh_screen()
     return
 
-  def set_mode(self, size: tuple, flags: int = 0)->__Surface:
+  def set_mode(self, size: tuple, flags: int = 0)->Surface:
     """ Create an Surface object """
     self.width,self.height = size
     Check._int(self.width,self.height)
@@ -111,16 +159,18 @@ class Display:
     if self.height+self.YPLUS>222:
       self.height = 222
 
-    self.surface = __Surface(self.width,self.height)
+    self.surface = Surface(self.width,self.height)
     self.__refresh_screen()
     return self.surface
 
   def flip(self)->None:
     """ Update display """
+    self.__refresh_screen()
     wait_vblank()
     [fl(*rect) for rect in self.surface.to_do["rect"]]
     [fc(*circle) for circle in self.surface.to_do["circle"]]
     [dl(*line) for line in self.surface.to_do["line"]]
+    self.surface.to_do = {"rect":list(),"circle":list(),"line":list(),"polygon":list()}
     return
 
   def get_surface(self)->__Surface:
@@ -129,7 +179,7 @@ class Display:
 
 class draw:
   @staticmethod
-  def rect(surface: __Surface, color: tuple | str, rect: Rect | tuple)->None:
+  def rect(surface: Surface, color: tuple | str, rect: Rect | tuple)->None:
     """ Drawing a rect on a surface """
     Check._color(color)
     Check._rect(rect)
@@ -137,7 +187,7 @@ class draw:
     return
 
   @staticmethod
-  def circle(surface: __Surface, color: tuple | str, pos: tuple, radius: int, width: int = 0)->None:
+  def circle(surface: Surface, color: tuple | str, pos: tuple, radius: int, width: int = 0)->None:
     """ Drawing a circle on a surface """
     Check._color(color)
     Check._int(radius,width)
@@ -146,7 +196,7 @@ class draw:
     return
 
   @staticmethod
-  def line(surface: __Surface, color: tuple | str, startpos: tuple, endpos: tuple)->None:
+  def line(surface: Surface, color: tuple | str, startpos: tuple, endpos: tuple)->None:
     """ Drawing a line on a surface """
     Check._color(color)
     Check._tuple(startpos,endpos)
@@ -189,6 +239,43 @@ class key:
     """ Get all keys and their status """
     return {key:keydown(key) for key in LOC_KEYS_}
 
+class time:
+  @staticmethod
+  def Clock()->Clock:
+    """ Returning pygame.Clock object """
+    return Clock()
+
+  @staticmethod
+  def delay(delay: int)->None:
+    """ Stop for speciefieds milliseconds """
+    sys_time.sleep(delay/1000)
+    return
+
+class Clock:
+  def __init__(self)->None:
+    """ Class for pygame.clock objec """
+    self.start_time = sys_time.monotonic()
+    self.last_elapse = None
+    self.elapsed_time = []
+    return
+
+  def tick(self, fps: int = 60)->None:
+    """ Wait for targeted fps """
+    if not self.last_elapse:
+      self.last_elapse = self.start_time
+    while sys_time.monotonic() - self.last_elapse < 1/fps:
+      pass
+    self.elapsed_time.append(sys_time.monotonic() - self.last_elapse)
+    if len(self.elapsed_time)>30:
+      del self.elapsed_time[0]
+    self.last_elapse = sys_time.monotonic()
+    return
+
+  def get_fps(self)->float:
+    """ Returning average clock FPS (based on last 30 values)"""
+    return 1/((sum(self.elapsed_time)/len(self.elapsed_time)+0.00001)+0.00001)
+
 ################## assignements ###########
 
 display = Display()
+event = Events()
