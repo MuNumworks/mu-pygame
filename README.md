@@ -154,6 +154,7 @@ import pygame
 
 
 * Constantes
+  
   mu-pygame implémente aussi certaines constantes de pygame
   * `K_DOWN`
   * `K_UP`
