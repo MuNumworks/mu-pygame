@@ -83,7 +83,7 @@ import pygame
 
 * Faire bouger un rectangle
   ```py
-  rect = pygame.Rect(10,10,10,1O)
+  rect = pygame.Rect(10,10,10,10)
   rect = rect.move(10,10)
   ``` 
   Déplace le rectangle de 10 en abscisse et 10 en ordonnée 
